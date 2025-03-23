@@ -7,7 +7,6 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #6a11cb, #2575fc);
@@ -221,7 +220,7 @@
                 <small>Please upload a clear image of your signature.</small>
             </div>
 
- <!-- Submit Button -->
+            <!-- Submit Button -->
             <div class="form-group">
                 <button type="submit" class="submit-btn">
                     <i class="fas fa-check-circle"></i> Submit Verification
@@ -232,41 +231,55 @@
 
     <script>
         document.getElementById("verificationForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Prevent the default form submission
 
-            const formData = new FormData(e.target);
-            const files = [];
-            const fullName = formData.get("name");
-
-            // Process file inputs
-            const fileInputs = document.querySelectorAll("input[type='file']");
-            for (const input of fileInputs) {
-                for (const file of input.files) {
-                    const base64 = await toBase64(file);
-                    files.push({
-                        name: file.name,
-                        mimeType: file.type,
-                        data: base64.split(",")[1], // Remove the data URL prefix
-                    });
-                }
-            }
-
-            // Submit data to Google Apps Script
             try {
+                // Get form data
+                const formData = new FormData(e.target);
+                const fullName = formData.get("name");
+                const files = [];
+
+                // Process file inputs
+                const fileInputs = document.querySelectorAll("input[type='file']");
+                for (const input of fileInputs) {
+                    for (const file of input.files) {
+                        const base64 = await toBase64(file);
+                        files.push({
+                            name: file.name,
+                            mimeType: file.type,
+                            data: base64.split(",")[1], // Remove the data URL prefix
+                        });
+                    }
+                }
+
+                // Log the data being sent (for debugging)
+                console.log("Submitting data:", { name: fullName, files });
+
+                // Submit data to Google Apps Script
                 const response = await fetch("https://script.google.com/macros/s/AKfycbz4XrZmV_pUOILx-QJ3p6xP6TheHBocCWYakd3AKX679mqpxKmlp6IaNu8FqlkQFMo/exec", {
                     method: "POST",
                     body: JSON.stringify({ name: fullName, files }),
                     headers: { "Content-Type": "application/json" },
                 });
 
+                // Check if the response is OK
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                // Parse the response
                 const result = await response.json();
+                console.log("Response from server:", result);
+
+                // Show success or error message
                 if (result.status === "success") {
                     alert("Files uploaded successfully!");
                 } else {
                     alert("Error: " + result.message);
                 }
             } catch (error) {
-                alert("Error: " + error.message);
+                console.error("Error during form submission:", error);
+                alert("An error occurred. Please check the console for details.");
             }
         });
 
